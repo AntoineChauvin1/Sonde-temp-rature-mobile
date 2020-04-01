@@ -1,0 +1,47 @@
+#include <ESP8266WiFi.h> //de base??
+#include <BlynkSimpleEsp8266.h> //Blink by Volodymyr Shymanshkyy
+
+
+#include <OneWire.h> //OneWire by Paul Stoffregen
+#include <DallasTemperature.h> // Dallas Temperature by... a lots of guys!
+const int oneWireBus = 14;
+OneWire oneWire(oneWireBus);
+DallasTemperature sensors(&oneWire);
+char auth[] = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+char ssid[] = "UPC7C77516";
+char pass[] = "xxxxxxxxxx";
+BlynkTimer timer;
+// instanciation de l'ecran
+
+
+void show_temp(void){
+    sensors.requestTemperatures();
+    int waterTemp = sensors.getTempCByIndex(0);
+    
+
+    //for debugging, replace by  "display.drawString(0, 0, "pinV0: "+String(pinV0));
+   
+}
+void sendSensor()
+{
+ sensors.requestTemperatures();
+ float waterTemp = sensors.getTempCByIndex(0);
+ Blynk.virtualWrite(V5, waterTemp);
+ }
+void setup()
+{
+ // Start the DS18B20 sensor
+ sensors.begin();
+ // initialisation de l'ecran
+
+ Blynk.begin(auth, ssid, pass);
+ timer.setInterval(1000L, sendSensor);
+ }
+void loop()
+{
+
+
+
+ Blynk.run();
+ timer.run();
+}
